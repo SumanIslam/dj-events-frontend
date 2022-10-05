@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const Add = () => {
+const AddEventPage = () => {
   const [values, setValues] = useState({
     name: '',
     performers: '',
@@ -49,7 +49,6 @@ const Add = () => {
       toast.error('Something Went Wrong');
     } else {
       const evt = await res.json();
-      console.log(evt);
       router.push(`/events/${evt.data.attributes.slug}`)
     }
   }
@@ -142,4 +141,4 @@ const Add = () => {
 	);
 }
 
-export default Add
+export default AddEventPage;
