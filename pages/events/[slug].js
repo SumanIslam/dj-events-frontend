@@ -5,17 +5,36 @@ import { FaPencilAlt, FaTimes } from 'react-icons/fa';
 import styles from '@/styles/Event.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
-export default function EventPage({evt}) {
-  const deleteEvent = (e) => {
-    console.log('delete');
-  }
+// react toastify
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+export default function EventPage({event}) {
+	const evt = event.attributes;
+
+	const router = useRouter();
+	
+  const deleteEvent = async (e) => {
+		if (confirm('Are you sure?')) {
+			const res = await fetch(`${API_URL}/api/events/${event.id}`, {
+				method: 'DELETE',
+			});
+
+			if(!res.ok) {
+				toast.error('something went wrong')
+			} else {
+				router.push('/events')
+			}
+		}
+	};
 
   return (
 		<Layout>
 			<div className={styles.event}>
 				<div className={styles.controls}>
-					<Link href={`/events/edit/${evt.id}`}>
+					<Link href={`/events/edit/${event.id}`}>
 						<a>
 							<FaPencilAlt /> Edit Event
 						</a>
@@ -24,6 +43,7 @@ export default function EventPage({evt}) {
 						<FaTimes /> Delete Event
 					</a>
 				</div>
+				<ToastContainer />
 				<span>
 					{new Date(evt.date).toLocaleDateString('en-US')} at {evt.time}
 				</span>
@@ -82,7 +102,7 @@ export async function getStaticProps({ params: { slug } }) {
 
   return {
     props: {
-      evt: events[0].attributes
+      event: events[0]
     },
     revalidate: 1
   }
