@@ -31,10 +31,14 @@ export default function EventPage({evt}) {
 				{evt.image && (
 					<div className={styles.image}>
 						<Image
-							src={evt.image.data.attributes.formats.medium.url}
+							src={
+								evt.image.data
+									? evt.image.data.attributes.formats.thumbnail.url
+									: '/images/event-default.png'
+							}
 							width={960}
 							height={600}
-							alt={evt.image.data.attributes.alternativeText}
+							alt={evt.image.data? evt.image.data.attributes.alternativeText : 'Event Image'}
 						/>
 					</div>
 				)}
