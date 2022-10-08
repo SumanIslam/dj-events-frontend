@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FaImage } from 'react-icons/fa';
+import Modal from '@/components/Modal';
 
 // react toastify
 import { toast, ToastContainer } from 'react-toastify';
@@ -14,7 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const EditEventPage = ({event}) => {
   const evt = event.attributes;
-
+	// form state
 	const [values, setValues] = useState({
 		name: evt.name,
 		performers: evt.performers,
@@ -25,9 +26,19 @@ const EditEventPage = ({event}) => {
 		description: evt.description,
 	});
 
-	const [imagePreview, setImagePreview] = useState(evt.image.data? evt.image.data.attributes.formats.thumbnail.url : null)
+	// imagePreview state
+	const [imagePreview, setImagePreview] = useState(evt.image.data? evt.image.data.attributes.formats.thumbnail.url : null);
+
+	// modal state
+	const [showModal, setShowModal] = useState(false);
 
 	const router = useRouter();
+
+	const handleModalShow = (e) => {
+		e.preventDefault();
+		scrollTo({ top: 0, behavior: 'smooth' });
+		setShowModal(true);
+	}
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -164,10 +175,13 @@ const EditEventPage = ({event}) => {
 			)}
 
 			<div>
-				<button className="btn-secondary">
+				<button onClick={handleModalShow} className="btn-secondary">
 					<FaImage /> Set Image
 				</button>
 			</div>
+			<Modal show={showModal} onClose={() => setShowModal(false)}>
+				IMAGE UPLOAD
+			</Modal>
 		</Layout>
 	);
 };
