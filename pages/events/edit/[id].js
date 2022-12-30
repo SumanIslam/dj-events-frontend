@@ -8,13 +8,15 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FaImage } from 'react-icons/fa';
 import Modal from '@/components/Modal';
+import ImageUpload from '@/components/ImageUpload';
 
 // react toastify
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const EditEventPage = ({event}) => {
-  const evt = event.attributes;
+export default function EditEventPage({event}) {
+  const evt = event?.attributes;
+	
 	// form state
 	const [values, setValues] = useState({
 		name: evt.name,
@@ -48,6 +50,7 @@ const EditEventPage = ({event}) => {
 
 		if (emptyFields) {
 			toast.error('Please fill in all fields');
+			return;
 		}
 
 		const res = await fetch(`${API_URL}/api/events/${event.id}`, {
@@ -75,6 +78,13 @@ const EditEventPage = ({event}) => {
 		const { name, value } = e.target;
 		setValues({ ...values, [name]: value });
 	};
+
+	const imageUPloaded = async (e) => {
+		const res = await (await fetch(`${API_URL}/api/events/${event.id}?populate=image`)).json();
+
+		setImagePreview(res.data.attributes.image.data.attributes.formats.thumbnail.url);
+		setShowModal(false);
+	}
 
 	return (
 		<Layout title='Add new Event'>
@@ -156,6 +166,7 @@ const EditEventPage = ({event}) => {
 				<input type='submit' value='Update Event' className='btn' />
 			</form>
 
+			{/* event image preview */}
 			<h2>Event Image</h2>
 			{imagePreview ? (
 				<Image
@@ -179,14 +190,13 @@ const EditEventPage = ({event}) => {
 					<FaImage /> Set Image
 				</button>
 			</div>
+			{/* modal */}
 			<Modal show={showModal} onClose={() => setShowModal(false)}>
-				IMAGE UPLOAD
+				<ImageUpload evtId={event.id} imageUPloaded={imageUPloaded} />
 			</Modal>
 		</Layout>
 	);
 };
-
-export default EditEventPage;
 
 export async function getServerSideProps({params: {id}}) {
   const res = await fetch(`${API_URL}/api/events/${id}?populate=image`);

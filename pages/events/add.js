@@ -30,19 +30,20 @@ const AddEventPage = () => {
 
     if(emptyFields) {
       toast.error('Please fill in all fields');
+			return;
     }
+
+		const eventData = {
+			...values,
+			slug: values.name.toLowerCase().split(' ').join('-'),
+		};
 
     const res = await fetch(`${API_URL}/api/events`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({
-				data: {
-					...values,
-					slug: values.name.toLowerCase().split(' ').join('-'),
-				},
-			}),
+			body: JSON.stringify({data: eventData}),
 		});
 
     if(!res.ok) {
