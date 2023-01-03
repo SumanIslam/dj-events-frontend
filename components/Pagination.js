@@ -2,7 +2,6 @@ import { PER_PAGE } from '@/config/index';
 import Link from 'next/link';
 
 const Pagination = ({total, page}) => {
-  console.log(total, page);
   const lastPage = Math.ceil(total / PER_PAGE);
 
   return (
